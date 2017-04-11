@@ -39,19 +39,12 @@ button {
 }
 
 .btn-selected {
-    background-color: rgb(187, 187, 187);
-    background-color: rgba(161, 164, 159, 0.5);
+    background-color: rgb(217, 217, 217);
+    background-color: rgba(196, 199, 194, 0.5);
 }
 
 .btn-selected h4 {
-    font-weight: bolder;
-    text-align: center;
-}
 
-footer {
-    margin-top: 30px;
-    padding-top: 70px;
-    background-color: #F5F6F7;
 }
 
 #chart1 {
@@ -94,6 +87,11 @@ footer {
     display: none;
 }
 
+footer {
+    margin-top: 30px;
+    padding-top: 70px;
+    background-color: #F5F6F7;
+}
 
 /*
 
