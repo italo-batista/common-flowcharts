@@ -23,19 +23,17 @@ function seleciona(fluxograma) {
 
 function plot(chart) {
 
-    var width = 800;
-    var height = 800;
+    var width = 1300;
+    var height = 600;
 
     var mycolor = {"chart1":1, "chart2":2, "chart3":3, "chart4":4, "chart5":5, "chart6":6, "chart7":7, "chart8":8, "chart9":9, "chart10":10}
 
     var color = d3.scaleLinear()
         .domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        .range(["#DB9C85", "#EDCDC2", "#D2B295", "#CD4A7D", "#F75B3B", "#F6D155", "#95DEE3", "#578CA9", "#92B457", "#6D8955"]);
+        .range(["#F4F8BB", "#DBECBB", "#C9D6C2", "#DADAA9", "#EEE8AA", "#F5DEB3", "#FFE7C8", "#E6E6FA", "#D8BFD8", "#EABDBC"]);
         //.range(["#e7fa72", "#9ae685", "#5acc99", "#35aea4", "#408d9f", "#556c89", "#5c4c67", "#523142"]);
 
     var colorBorder = d3.scaleOrdinal(d3.schemeCategory20b);
-
-    console.log(chart);
 
     var svg = d3.select("#"+chart)
         .append("svg")
@@ -43,18 +41,18 @@ function plot(chart) {
         .attr("width", width)
         .attr("height", height);
 
-    var periodo_index_width = 60,
-        periodo_index_height = 20,
+    var periodo_index_width = 100,
+        periodo_index_height = 60,
         periodo_index_padding = 20;
 
-    for (var periodo = 1; periodo <= 8; periodo++) {
+    for (var periodo = 0; periodo <= 7; periodo++) {
 
         svg.append("g")
             .attr("class", "col-lg-1")
             .append("rect")
             .attr("width", periodo_index_width)
             .attr("height", periodo_index_height)
-            .attr("x", periodo * (periodo_index_width + periodo_index_padding))
+            .attr("x", periodo * (periodo_index_width + periodo_index_padding) + 25)
             .style("fill", color(mycolor[chart]));
 
         svg.append("g")
@@ -62,8 +60,8 @@ function plot(chart) {
             .append("rect")
             .attr("width", periodo_index_width)
             .attr("height", periodo_index_height)
-            .attr("x", periodo * (periodo_index_width + periodo_index_padding))
-            .attr("y", 30)
+            .attr("x", periodo * (periodo_index_width + periodo_index_padding) + 25)
+            .attr("y", periodo_index_height + 10)
             .style("fill", color(mycolor[chart]));
     }
 
@@ -139,3 +137,6 @@ function plot(chart) {
 
     }); // close read data*/
 }
+
+var grafico_inicial = "chart1";
+plot(grafico_inicial);
