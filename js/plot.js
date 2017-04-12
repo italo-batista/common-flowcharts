@@ -16,7 +16,10 @@ function seleciona(fluxograma) {
         }
     }
 
-    // document.getElementsByClassName("row")[1].remove();
+    var tam = document.getElementsByClassName("row").length;
+    for (var i = 1; i < tam; i++) {
+        document.getElementsByClassName("row")[i].remove();
+    }
 
     plot(fluxogramas[fluxograma]);
 }
