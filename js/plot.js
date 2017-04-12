@@ -1,27 +1,51 @@
 
-function seleciona(fluxograma) {
-    var fluxogramas = {"1": "chart1", "2": "chart2", "3": "chart3", "4": "chart4", "5": "chart5",
+function formata(f) {
+    var semBrackets = f.substring(1, f.length - 2);
+    var array = semBrackets.split(",");
+
+    for (var i = 0; i < array.length; i++) {
+
+        var disciplina = array[i];
+
+        if (i === 0)
+            disciplina = disciplina.substring(1, disciplina.length-1);
+        else if (i === (array.length - 1))
+            disciplina = disciplina.substring(2, disciplina.length);
+        else
+            disciplina = disciplina.substring(2, disciplina.length-1);
+
+        array[i] = disciplina;
+    }
+
+    return array;
+}
+
+function seleciona(chart) {
+    var charts = {"1": "chart1", "2": "chart2", "3": "chart3", "4": "chart4", "5": "chart5",
         "6": "chart6", "7": "chart7", "8": "chart8", "9": "chart9", "10": "chart10"};
-    var chart;
+    var selectedChart;
     var hiddenChart;
-    for (var f in fluxogramas) {
-        if (fluxograma === f) {
-            document.getElementById(f).className += "btn-selected";
-            chart = document.getElementById(fluxogramas[f]);
-            chart.style.display = "block";
+    for (var c in charts) {
+        if (chart === c) {
+            document.getElementById(c).className += "btn-selected";
+            selectedChart = document.getElementById(charts[c]);
+            selectedChart.style.display = "block";
         } else {
-            document.getElementById(f).className = document.getElementById(f).className.split("btn-selected").join("");
-            hiddenChart = document.getElementById(fluxogramas[f]);
+            document.getElementById(c).className = document.getElementById(c).className.split("btn-selected").join("");
+            hiddenChart = document.getElementById(charts[c]);
             hiddenChart.style.display = "none";
         }
     }
 
+    limpa();
+    plot(charts[chart]);
+}
+
+function limpa() {
     var tam = document.getElementsByClassName("row").length;
     for (var i = 1; i < tam; i++) {
         document.getElementsByClassName("row")[i].remove();
     }
-
-    plot(fluxogramas[fluxograma]);
 }
 
 function plot(chart) {
@@ -29,7 +53,8 @@ function plot(chart) {
     var width = 1300;
     var height = 600;
 
-    var mycolor = {"chart1":1, "chart2":2, "chart3":3, "chart4":4, "chart5":5, "chart6":6, "chart7":7, "chart8":8, "chart9":9, "chart10":10}
+    var mycolor = {"chart1":1, "chart2":2, "chart3":3, "chart4":4, "chart5":5, "chart6":6, "chart7":7, "chart8":8, "chart9":9, "chart10":10};
+    var flowsIndex = mycolor;
 
     var color = d3.scaleLinear()
         .domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -37,112 +62,75 @@ function plot(chart) {
         //.range(["#e7fa72", "#9ae685", "#5acc99", "#35aea4", "#408d9f", "#556c89", "#5c4c67", "#523142"]);
         //.range(["#DB9C85", "#EDCDC2", "#D2B295", "#CD4A7D", "#F75B3B", "#F6D155", "#95DEE3", "#578CA9", "#92B457", "#6D8955"]);
 
-    var colorBorder = d3.scaleOrdinal(d3.schemeCategory20b);
-
     var svg = d3.select("#"+chart)
         .append("svg")
         .attr("class", "row")
         .attr("width", width)
         .attr("height", height);
 
-    var periodo_index_width = 100,
-        periodo_index_height = 60,
+    var periodo_width = 100,
+        periodo_height = 60,
+        periodo_padding = 20;
+
+    var periodo_index_width = periodo_width,
+        periodo_index_height = periodo_height / 2,
         periodo_index_padding = 20;
 
-    for (var periodo = 0; periodo <= 7; periodo++) {
+    var pers = [];
+    var qntPorPeriodo = [];
+    for (var periodo = 1; periodo <= 9; periodo++) {
 
-        svg.append("g")
-            .attr("class", "col-lg-1")
-            .append("rect")
+        var per = svg.append("g")
+                    .attr("class", "per" + periodo);
+
+        pers[periodo] = per;
+
+            per.append("rect")
             .attr("width", periodo_index_width)
             .attr("height", periodo_index_height)
             .attr("x", periodo * (periodo_index_width + periodo_index_padding) + 25)
             .style("fill", color(mycolor[chart]));
 
-        svg.append("g")
-            .attr("class", "col-lg-1")
-            .append("rect")
-            .attr("width", periodo_index_width)
-            .attr("height", periodo_index_height)
-            .attr("x", periodo * (periodo_index_width + periodo_index_padding) + 25)
-            .attr("y", periodo_index_height + 10)
-            .style("fill", color(mycolor[chart]));
+        qntPorPeriodo[periodo] = 0;
     }
 
-/*    d3.csv("data.csv", function (error, data) {
+    var fluxogramas = [];
+    d3.csv("data.csv", function (error, data) {
 
         if (error) throw error;
 
+        var i = 0;
         data.forEach(function (d) {
-            d.mat = +d.mat,
-                d.periodo = +d.periodo,
-                d.freq = +d.freq,
-                d.semestre = +d.semestre
+            fluxogramas[++i] = formata(d.fluxograma);
         });
 
-        max_mat = d3.max(data, function (d) {
-            return d.mat;
-        });
-        min_mat = d3.min(data, function (d) {
-            return d.mat;
-        });
+        var myFlowIndex = flowsIndex[chart];
+        var myFlow = fluxogramas[myFlowIndex];
+        var tam = myFlow.length;
 
-        for (periodo = 1; periodo <= 8; periodo++) {
+        for (var i = 0; i < tam; i++) {
 
-            var x0;
-            var mysvg;
-            var quinto_periodo = 5;
-            var primeiro_periodo = 1;
+            var t = myFlow[i].length;
+            var meuPeriodo = myFlow[i].substring(0,1);
+            var minhaDisc = myFlow[i].substring(1, t);
+            var myPerRef = pers[meuPeriodo];
+            var y = ++qntPorPeriodo[meuPeriodo];
 
-            mysvg = "svg.svg1";
-            x0 = box_width * (periodo - primeiro_periodo);
-
-            var box = d3.select(mysvg)
-                .append("g")
-                .attr("width", box_width)
-                .attr("height", box_height)
-                .attr("transform", "translate(" + x0 + "," + 0 + ")");
-
-            var mydata = data.filter(function (d) {
-                return d.periodo === periodo;
-            });
-
-            box.selectAll("circle")
-                .data(mydata)
-                .enter()
-                .append("circle")
-                .attr("r", circle_radius)
-                .style("fill", function (d) {
-                    return color(d.periodo);
-                });
-
-            box.append("text")
-                .attr("class", "label")
-                .attr("y", box_height - 6)
-                .attr("x", box_width / 2 - 20)
-                .attr("font-family", "Verdana")
-                .attr("font-size", "12")
-                .text(periodo + " periodo");
-
-            d3.select(mysvg)
-                .append("rect")
-                .attr("class", "frame")
-                .attr("x", x0 + padding_box)
-                .attr("y", 14.3)
-                .attr("width", box_width - padding_box)
-                .attr("height", height - 35);
-
-            d3.select(mysvg)
-                .append("line")
-                .attr("id", "top")
-                .attr("x1", x0 + padding_x0)
-                .attr("x2", x0 + box_width);
+            myPerRef.append("rect")
+                .attr("width", periodo_width)
+                .attr("height", periodo_height)
+                .attr("x", meuPeriodo * (periodo_width + periodo_padding) + 25)
+                .attr("y", (periodo_height + 10)* y)
+                .style("fill", color(mycolor[chart]))
+                .append("text")
+                .attr("x", meuPeriodo * (periodo_width + periodo_padding) + 25)
+                .attr("y", (periodo_height + 10)* y)
+                .attr("dy", ".35em")
+                .style("fill", "#000")
+                .text(minhaDisc);
         }
-
-    }); // close read data*/
-
+    });
 }
 
 var grafico_inicial = "chart1";
 plot(grafico_inicial);
-
