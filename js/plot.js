@@ -20,6 +20,60 @@ function formata(f) {
     return array;
 }
 
+function formataDisciplinas(d) {
+
+    formatter = {
+        'calci': "Cálculo I",
+        'ic': "Int. à Comptação",
+        'lpi': "LP I",
+        'lpt': "LPT",
+        'p1': "Programação I",
+        'vetorial': "Álgebra Vetorial",
+        'calcii': "Cálculo II",
+        'fisica-classica': "Física Clássica",
+        'grafos': "Teoria dos Grafos",
+        'lpii': "LP II",
+        'mat-discreta': "Mat. Discreta",
+        'met-cientifica': "Met. Científica",
+        'pii': "Programação II",
+        'eda': "EDA",
+        'fisica-moderna': "Física Moderna",
+        'gi': "Gerência da Info.",
+        'leda': "LEDA",
+        'tc': "Teoria da Comput.",
+        'linear': "Álgebra Linear",
+        'loac': "LOAC",
+        'logica': "Lógica",
+        'oac': "OAC",
+        'probabilidade': "Probabilidade",
+        'si1': "SI I",
+        'bd1': "Banco de Dados I",
+        'es': "Eng. de Software",
+        'metodos': "Métodos Estatísticos",
+        'plp': "PLP",
+        'sea': "SEA",
+        'si2': "SI II",
+        'atal': "ATAL",
+        'bd2': "Banco de Dados II",
+        'infosoc': "INFOSOC",
+        'les': "LES",
+        'redes': "Redes",
+        'so': "SO",
+        'compiladores': "Compiladores",
+        'direito': "Direito e Cidadania",
+        'irc': "IRC",
+        'lirc': "LIRC",
+        'projetoi': "Projeto I",
+        'aval-desemp': "Aval. de Desemp.",
+        'ia': "Intel. Artificial",
+        'projetoii': "Projeto II",
+        'met-soft-num': "Met. Soft. Numéricos"
+    };
+
+    return formatter[d];
+
+}
+
 function seleciona(chart) {
     var charts = {"1": "chart1", "2": "chart2", "3": "chart3", "4": "chart4", "5": "chart5",
         "6": "chart6", "7": "chart7", "8": "chart8", "9": "chart9", "10": "chart10"};
@@ -72,18 +126,13 @@ function plot(chart) {
         .attr("width", width)
         .attr("height", height);
 
-    var periodo_width = 100,
+    var periodo_width = 120,
         periodo_height = 60,
         periodo_padding = 20;
 
     var periodo_index_width = periodo_width,
         periodo_index_height = periodo_height / 2,
         periodo_index_padding = periodo_padding;
-
-    var N = 15; // tamanho máximo de palavra que cabe numa box de uma disciplina
-    var yBoxScale = d3.scaleLinear()
-        .domain([0, N])
-        .range([0, periodo_width-3]);
 
     var pers = [];
     var qntPorPeriodo = [];
@@ -101,16 +150,18 @@ function plot(chart) {
             .style("fill", color(mycolor[chart]));
 
         var texto = periodo +" periodo";
-        var centralizar = periodo_width/2 - yBoxScale(texto.length)/2;
+        var centralizar = (periodo-1) * (periodo_index_width + periodo_index_padding) + periodo_index_padding + periodo_width/2;
 
         per.append("text")
-            .attr("x", (periodo-1) * (periodo_index_width + periodo_index_padding) + periodo_index_padding + centralizar)
+            .text(texto)
+            .attr("x", centralizar)
             .attr("y", (periodo_index_height / 2) + 3.5)
+            .attr("text-anchor","middle")
+            .attr("alignment-baseline","central")
             .style("fill", fontColor(mycolor[chart]))
             .style("stroke-width", 1)
             .style("font-size", "12px")
-            .style("font-family", "Poppins, sans-serif")
-            .text(texto);
+            .style("font-family", "Poppins, sans-serif");
 
         qntPorPeriodo[periodo] = 0;
     }
@@ -133,10 +184,11 @@ function plot(chart) {
 
             var t = myFlow[i].length;
             var meuPeriodo = myFlow[i].substring(0, 1);
-            var minhaDisc = myFlow[i].substring(1, t);
+            var d = myFlow[i].substring(1, t);
+            var minhaDisc = formataDisciplinas(d);
             var myPerRef = pers[meuPeriodo];
             var y = ++qntPorPeriodo[meuPeriodo];
-            var centralizar = periodo_width/2 - yBoxScale(minhaDisc.length)/2;
+            var xCentralizar = (meuPeriodo - 1) * (periodo_width + periodo_padding) + periodo_padding + periodo_width/2;
 
             myPerRef.append("rect")
                 .attr("width", periodo_width)
@@ -147,13 +199,15 @@ function plot(chart) {
 
             myPerRef
                 .append("text")
-                .attr("x", (meuPeriodo - 1) * (periodo_width + periodo_padding) + periodo_padding + centralizar)
+                .text(minhaDisc)
+                .attr("x", xCentralizar)
                 .attr("y", (periodo_height + 10) * y + periodo_height / 2 + 2)
+                .attr("text-anchor","middle")
+                .attr("alignment-baseline","central")
                 .style("fill", fontColor(mycolor[chart]))
                 .style("stroke-width", 1)
                 .style("font-size", "12px")
-                .style("font-family", "Poppins, sans-serif")
-                .text(minhaDisc);
+                .style("font-family", "Poppins, sans-serif");
         }
     });
 

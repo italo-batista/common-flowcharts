@@ -47,6 +47,13 @@ button {
 
 }
 
+text {
+    text-align: center;
+    text-anchor: middle;
+    word-wrap: break-word;
+    position: relative;
+}
+
 #chart1 {
     display: block;
 }
