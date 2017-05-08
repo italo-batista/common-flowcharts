@@ -47,6 +47,13 @@ button {
 
 }
 
+text {
+    text-align: center;
+    text-anchor: middle;
+    word-wrap: break-word;
+    position: relative;
+}
+
 #chart1 {
     display: block;
 }
@@ -85,8 +92,5 @@ button {
 
 #chart10 {
     display: none;
-}
-
-rect {
-    color: #614848;
+    color: #0e9c00;
 }
