@@ -47,6 +47,13 @@ button {
 
 }
 
+text {
+    text-align: center;
+    text-anchor: middle;
+    word-wrap: break-word;
+    position: relative;
+}
+
 #chart1 {
     display: block;
 }
@@ -85,133 +92,5 @@ button {
 
 #chart10 {
     display: none;
+    color: #0e9c00;
 }
-
-rect {
-    color: #3d4449;
-}
-
-/*
-
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-.axis text {
-    font-family: sans-serif;
-    font-size: 11px;
-}
-
-.dot {
-    stroke: #000;
-}
-
-.frame {
-    fill: none;
-    stroke: #000;
-}
-
-#top {
-    stroke: rgb(189, 189, 189);
-}
-
-.extent {
-    fill: #000;
-    fill-opacity: .125;
-    stroke: #fff;
-}
-
-circle.hidden {
-    fill: #ccc !important;
-}
-
-.ticks {
-    font: 10px sans-serif;
-}
-
-.track,
-.track-inset,
-.track-overlay {
-    stroke-linecap: round;
-}
-
-.track {
-    stroke: #000;
-    stroke-opacity: 0.3;
-    stroke-width: 10px;
-}
-
-.track-inset {
-    stroke: #ddd;
-    stroke-width: 8px;
-}
-
-.track-overlay {
-    pointer-events: stroke;
-    stroke-width: 50px;
-    cursor: crosshair;
-}
-
-.handle {
-    fill: #fff;
-    stroke: #000;
-    stroke-opacity: 0.5;
-    stroke-width: 1.25px;
-}
-
-@media screen and (max-width: 768px) {
-    h1 {
-        font-size: 2em;
-        line-height: 1.4;
-    }
-}
-
-.header {
-    font-family: 'Poppins', sans-serif;
-    border-bottom: solid 5px #f56a6a;
-    padding: 6em 0 1em 0;
-}
-
-.header h2 {
-    font-size: 18px;
-}
-
-.sidebar-btn {
-    position: absolute;
-    top: 25px;
-    z-index: 999;
-    background-color: #fff;
-    padding: 10px 20px;
-    color: #f56a6a;
-}
-.sidebar-btn:hover {
-    color: #f56a6a;
-    text-decoration: none;
-}
-
-.nome-disciplina {
-    color: lightgrey;
-}
-
-.riscado {
-    text-decoration: line-through;
-}
-
-h2 {
-    margin: 6px;
-}
-
-header p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1em;
-    font-weight: 400;
-    letter-spacing: 0.075em;
-    margin-top: -0.5em;
-    text-transform: uppercase;
-}
-
-*/
-

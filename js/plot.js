@@ -1,4 +1,7 @@
 
+var lastFlow = [];
+var firsPlot = true;
+
 function formata(f) {
     var semBrackets = f.substring(1, f.length - 2);
     var array = semBrackets.split(",");
@@ -18,6 +21,64 @@ function formata(f) {
     }
 
     return array;
+}
+
+function isIn(c, array) {
+    for (var i = 0; i< array.length; i++) if (array[i] === c) return true;
+    return false;
+}
+
+function formataDisciplinas(d) {
+
+    formatter = {
+        'calci': "Cálculo I",
+        'ic': "Int. à Comptação",
+        'lpi': "LP I",
+        'lpt': "LPT",
+        'p1': "Programação I",
+        'vetorial': "Álgebra Vetorial",
+        'calcii': "Cálculo II",
+        'fisica-classica': "Física Clássica",
+        'grafos': "Teoria dos Grafos",
+        'lpii': "LP II",
+        'mat-discreta': "Mat. Discreta",
+        'met-cientifica': "Met. Científica",
+        'pii': "Programação II",
+        'eda': "EDA",
+        'fisica-moderna': "Física Moderna",
+        'gi': "Gerência da Info.",
+        'leda': "LEDA",
+        'tc': "Teoria da Comput.",
+        'linear': "Álgebra Linear",
+        'loac': "LOAC",
+        'logica': "Lógica",
+        'oac': "OAC",
+        'probabilidade': "Probabilidade",
+        'si1': "SI I",
+        'bd1': "Banco de Dados I",
+        'es': "Eng. de Software",
+        'metodos': "Métodos Estatísticos",
+        'plp': "PLP",
+        'sea': "SEA",
+        'si2': "SI II",
+        'atal': "ATAL",
+        'bd2': "Banco de Dados II",
+        'infosoc': "INFOSOC",
+        'les': "LES",
+        'redes': "Redes",
+        'so': "SO",
+        'compiladores': "Compiladores",
+        'direito': "Direito e Cidadania",
+        'irc': "IRC",
+        'lirc': "LIRC",
+        'projetoi': "Projeto I",
+        'aval-desemp': "Aval. de Desemp.",
+        'ia': "Intel. Artificial",
+        'projetoii': "Projeto II",
+        'met-soft-num': "Met. Soft. Numéricos"
+    };
+
+    return formatter[d];
 }
 
 function seleciona(chart) {
@@ -50,6 +111,8 @@ function limpa() {
 
 function plot(chart) {
 
+    console.log(lastFlow);
+
     var width = 1300;
     var height = 600;
 
@@ -62,34 +125,52 @@ function plot(chart) {
         //.range(["#e7fa72", "#9ae685", "#5acc99", "#35aea4", "#408d9f", "#556c89", "#5c4c67", "#523142"]);
         //.range(["#DB9C85", "#EDCDC2", "#D2B295", "#CD4A7D", "#F75B3B", "#F6D155", "#95DEE3", "#578CA9", "#92B457", "#6D8955"]);
 
+    var contrastColor = d3.scaleLinear()
+        .domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        .range(["#917c00", "#575F4C", "#525052", "#636349", "#5A5543", "#665A51", "#7B6B62", "#646477", "#635063", "#614848"]);
+
     var svg = d3.select("#"+chart)
         .append("svg")
         .attr("class", "row")
         .attr("width", width)
         .attr("height", height);
 
-    var periodo_width = 100,
+    var periodo_width = 120,
         periodo_height = 60,
         periodo_padding = 20;
 
     var periodo_index_width = periodo_width,
         periodo_index_height = periodo_height / 2,
-        periodo_index_padding = 20;
+        periodo_index_padding = periodo_padding;
 
     var pers = [];
     var qntPorPeriodo = [];
     for (var periodo = 1; periodo <= 9; periodo++) {
 
         var per = svg.append("g")
-                    .attr("class", "per" + periodo);
+            .attr("class", "per" + periodo);
 
         pers[periodo] = per;
 
-            per.append("rect")
+        per.append("rect")
             .attr("width", periodo_index_width)
             .attr("height", periodo_index_height)
-            .attr("x", periodo * (periodo_index_width + periodo_index_padding) + 25)
+            .attr("x", (periodo-1) * (periodo_index_width + periodo_index_padding) + periodo_index_padding)
             .style("fill", color(mycolor[chart]));
+
+        var texto = periodo +" periodo";
+        var centralizar = (periodo-1) * (periodo_index_width + periodo_index_padding) + periodo_index_padding + periodo_width/2;
+
+        per.append("text")
+            .text(texto)
+            .attr("x", centralizar)
+            .attr("y", (periodo_index_height / 2) + 3.5)
+            .attr("text-anchor","middle")
+            .attr("alignment-baseline","central")
+            .style("fill", contrastColor(mycolor[chart]))
+            .style("stroke-width", 1)
+            .style("font-size", "12px")
+            .style("font-family", "Poppins, sans-serif");
 
         qntPorPeriodo[periodo] = 0;
     }
@@ -111,25 +192,45 @@ function plot(chart) {
         for (var i = 0; i < tam; i++) {
 
             var t = myFlow[i].length;
-            var meuPeriodo = myFlow[i].substring(0,1);
-            var minhaDisc = myFlow[i].substring(1, t);
-            var myPerRef = pers[meuPeriodo];
-            var y = ++qntPorPeriodo[meuPeriodo];
+            var d = myFlow[i].substring(1, t);
 
-            myPerRef.append("rect")
+            var meuPeriodo = myFlow[i].substring(0, 1);
+            var myPerRef = pers[meuPeriodo];
+
+            var y = ++qntPorPeriodo[meuPeriodo];
+            var xCentralizar = (meuPeriodo - 1) * (periodo_width + periodo_padding) + periodo_padding + periodo_width/2;
+
+            var rect = myPerRef.append("rect")
                 .attr("width", periodo_width)
                 .attr("height", periodo_height)
-                .attr("x", meuPeriodo * (periodo_width + periodo_padding) + 25)
-                .attr("y", (periodo_height + 10)* y)
-                .style("fill", color(mycolor[chart]))
+                .attr("x", (meuPeriodo - 1) * (periodo_width + periodo_padding) + periodo_padding)
+                .attr("y", (periodo_height + 10) * y)
+                .style("fill", color(mycolor[chart]));
+
+            if (!isIn(myFlow[i], lastFlow) && !firsPlot) {
+                rect.style("stroke", contrastColor(mycolor[chart]))
+                    .style("stroke-width","3");
+            };
+
+            var minhaDisc = formataDisciplinas(d);
+
+            myPerRef
                 .append("text")
-                .attr("x", meuPeriodo * (periodo_width + periodo_padding) + 25)
-                .attr("y", (periodo_height + 10)* y)
-                .attr("dy", ".35em")
-                .style("fill", "#000")
-                .text(minhaDisc);
+                .text(minhaDisc)
+                .attr("x", xCentralizar)
+                .attr("y", (periodo_height + 10) * y + periodo_height / 2 + 2)
+                .attr("text-anchor","middle")
+                .attr("alignment-baseline","central")
+                .style("fill", contrastColor(mycolor[chart]))
+                .style("stroke-width", 1)
+                .style("font-size", "12px")
+                .style("font-family", "Poppins, sans-serif");
         }
+
+        firsPlot = false;
+        lastFlow = myFlow;
     });
+
 }
 
 var grafico_inicial = "chart1";
