@@ -1,6 +1,53 @@
 
 var lastFlow = [];
 var firsPlot = true;
+var flow_pattern = {
+    'calci': 1,
+    'ic': 1,
+    'lpi': 1,
+    'lpt': 1,
+    'p1': 1,
+    'vetorial': 1,
+    'calcii': 2,
+    'fisica-classica': 2,
+    'grafos': 2,
+    'lpii': 2,
+    'mat-discreta': 2,
+    'met-cientifica': 2,
+    'pii': 2,
+    'eda': 3,
+    'fisica-moderna': 3,
+    'gi': 3,
+    'leda': 3,
+    'tc': 3,
+    'linear': 3,
+    'loac': 4,
+    'logica': 4,
+    'oac': 4,
+    'probabilidade': 3,
+    'si1': 4,
+    'bd1': 4,
+    'es': 4,
+    'metodos': 4,
+    'plp': 4,
+    'sea': "",
+    'si2': 5,
+    'atal': 5 ,
+    'bd2': 5,
+    'infosoc': 5,
+    'les': 5,
+    'redes': 5,
+    'so': 6,
+    'compiladores': 5,
+    'direito': 6,
+    'irc': 6,
+    'lirc': 6,
+    'projetoi': 7,
+    'aval-desemp': 7,
+    'ia': 6,
+    'projetoii': 8,
+    'met-soft-num': 7
+};
 
 function formata(f) {
     var semBrackets = f.substring(1, f.length - 2);
@@ -98,8 +145,10 @@ function seleciona(chart) {
         }
     }
 
+    var compare_with_pattern = false;
+
     limpa();
-    plot(charts[chart]);
+    plot(charts[chart], compare_with_pattern);
 }
 
 function limpa() {
@@ -109,12 +158,12 @@ function limpa() {
     }
 }
 
-function plot(chart) {
+function plot(chart, compare_with_pattern) {
 
-    console.log(lastFlow);
+    if (compare_with_pattern) console.log('oooiii');
 
-    var width = 1300;
-    var height = 600;
+    var width = 1265;
+    var height = 550;
 
     var mycolor = {"chart1":1, "chart2":2, "chart3":3, "chart4":4, "chart5":5, "chart6":6, "chart7":7, "chart8":8, "chart9":9, "chart10":10};
     var flowsIndex = mycolor;
@@ -207,10 +256,18 @@ function plot(chart) {
                 .attr("y", (periodo_height + 10) * y)
                 .style("fill", color(mycolor[chart]));
 
-            if (!isIn(myFlow[i], lastFlow) && !firsPlot) {
+
+            // comparing courses with flowchart pattern or among them
+            if (compare_with_pattern && flow_pattern[d] != meuPeriodo) {
+
                 rect.style("stroke", contrastColor(mycolor[chart]))
                     .style("stroke-width","3");
-            };
+
+            } else if (!firsPlot && !isIn(myFlow[i], lastFlow)) {
+
+                rect.style("stroke", contrastColor(mycolor[chart]))
+                    .style("stroke-width","3");
+            }
 
             var minhaDisc = formataDisciplinas(d);
 
@@ -233,5 +290,22 @@ function plot(chart) {
 
 }
 
+function compare() {
+
+    var charts = {"1": "chart1", "2": "chart2", "3": "chart3", "4": "chart4", "5": "chart5",
+        "6": "chart6", "7": "chart7", "8": "chart8", "9": "chart9", "10": "chart10"};
+
+    var selectedChart;
+    for (var c in charts)
+        if (document.getElementById(c).className === "btn-selected")
+            selectedChart = charts[c];
+
+    var compare_with_pattern = true;
+
+    limpa();
+    plot(selectedChart, compare_with_pattern);
+}
+
 var grafico_inicial = "chart1";
-plot(grafico_inicial);
+var compare_with_pattern = false;
+plot(grafico_inicial, compare_with_pattern);
