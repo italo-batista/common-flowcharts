@@ -260,7 +260,7 @@ function plot(chart, compare_with_pattern) {
             // comparing courses with flowchart pattern or among them
             if (compare_with_pattern && flow_pattern[d] != meuPeriodo) {
 
-                rect.style("stroke", contrastColor(mycolor[chart]))
+                rect.style("stroke", "#929292")
                     .style("stroke-width","3");
 
             } else if (!firsPlot && !isIn(myFlow[i], lastFlow)) {
